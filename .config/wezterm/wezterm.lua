@@ -28,7 +28,7 @@ config.color_scheme = scheme_for_appearance(get_appearance())
 
 
 -- set the font
-config.font = wezterm.font 'Fira Code'
+config.font = wezterm.font 'Fira Code Medium'
 
 
 config.hide_tab_bar_if_only_one_tab = true
