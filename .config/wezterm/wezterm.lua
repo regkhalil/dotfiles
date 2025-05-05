@@ -32,5 +32,6 @@ config.font = wezterm.font 'Fira Code Medium'
 
 
 config.hide_tab_bar_if_only_one_tab = true
+config.enable_wayland = false
 
 return config
