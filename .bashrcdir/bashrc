@@ -8,3 +8,4 @@
 
 alias ls="eza -la"
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias update="sudo apt update && sudo apt upgrade -y && flatpak update -y && sudo snap refresh && sudo snap refresh --hold"
