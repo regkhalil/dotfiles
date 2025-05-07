@@ -1,5 +1,7 @@
 # my bashrc personalisations 
 # add this to the end of the actual .bashrc
+#
+#
 # for FILE in ~/.bashrcdir/*; do
 #     source $FILE
 # done
@@ -9,3 +11,5 @@
 alias ls="eza -la"
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias update="sudo apt update && sudo apt upgrade -y && flatpak update -y && sudo snap refresh"
+
+[ -d "$HOME/.local/scripts" ] && export PATH="$PATH:$HOME/.local/scripts"
