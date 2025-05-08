@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Define directories to process
+DIRS=(
+  "$HOME/Pictures/Camera"
+  "$HOME/Pictures/Whatsapp Images"
+  "$HOME/Pictures/Whatsapp Videos"
+)
+
+# Target output directory
+TARGET="$HOME/Pictures/Photos"
+
+# Make sure the target directory exists
+mkdir -p "$TARGET"
+
+for DIR in "${DIRS[@]}"; do
+  # Remove all metadata except Orientation, then copy Orientation back
+  find "$DIR" -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.mp4" -o -iname "*.mov" \) -exec \
+    exiftool -all:all= -tagsfromfile @ -exif:Orientation -overwrite_original {} \;
+
+  # Set all date fields based on filename (for supported formats)
+  find "$DIR" -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" \) -exec \
+    exiftool "-alldates<filename" -overwrite_original {} \;
+
+  # Rename files based on CreateDate
+  find "$DIR" -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.mp4" -o -iname "*.mov" \) -exec \
+    exiftool -d '%Y%m%d-%H%M%%-03.c.%%e' '-filename<CreateDate' -overwrite_original {} \;
+
+  # Move processed files to target folder
+  find "$DIR" -maxdepth 1 -type f -exec mv {} "$TARGET" \;
+done
