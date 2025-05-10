@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status (except in conditionals)
+set -e
+
+# === Variables ===
+BACKUP_DEST="/media/khalil/External/Backups/Restic"
+export RESTIC_REPOSITORY="$BACKUP_DEST"
+export RESTIC_PASSWORD_FILE="$HOME/.restic-password"
+
+# === Start ===
+echo "Starting restic backup..."
+echo "Backup destination: $RESTIC_REPOSITORY"
+echo "Password file: $RESTIC_PASSWORD_FILE"
+
+# Check if backup destination is mounted
+if [ ! -d "$BACKUP_DEST" ]; then
+    echo "Error: Backup destination '$BACKUP_DEST' not found. Is the drive mounted?"
+    exit 1
+fi
+
+# === Backup ===
+echo "Running restic backup..."
+restic backup "$HOME/Documents" "$HOME/Library" "$HOME/Pictures" "$HOME/Sync" "$HOME/Audiobooks" "$HOME/Music" "$HOME/.config" "$HOME/.mozilla"  --exclude-caches
+
+# === Prune ===
+echo "Pruning old snapshots (keeping last 7)..."
+restic forget --keep-daily 1 --keep-weekly 1 --prune
+
+# === Done ===
+echo "Backup and prune completed successfully."
+
