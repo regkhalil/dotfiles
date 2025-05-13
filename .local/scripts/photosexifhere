@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Only process files in the current directory
+DIR="."
+
+# Remove all metadata except Orientation, then copy Orientation back
+find "$DIR" -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.mp4" -o -iname "*.mov" \) -exec \
+  exiftool -all:all= -tagsfromfile @ -exif:Orientation -overwrite_original {} \;
+
+# Set all date fields based on filename (for supported formats)
+find "$DIR" -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" \) -exec \
+  exiftool "-alldates<filename" -overwrite_original {} \;
+
+# Rename files based on CreateDate
+find "$DIR" -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.mp4" -o -iname "*.mov" \) -exec \
+  exiftool -d '%Y%m%d-%H%M%%-03.c.%%e' '-filename<CreateDate' -overwrite_original {} \;
+
+# Done - no file moves
