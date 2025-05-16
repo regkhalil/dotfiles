@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Make all scripts in ~/.local/scripts executable
+echo "Making scripts in ~/.local/scripts/ executable..."
+find "$HOME/.local/scripts" -type f -exec chmod +x {} \;
+
+# Reload systemd user units
+echo "Reloading systemd user units..."
+systemctl --user daemon-reexec
+systemctl --user daemon-reload
+
+# Prompt user to enable each service or timer
+echo "Checking for user systemd units to enable..."
+
+while IFS= read -r unit; do
+    unit_name=$(basename "$unit")
+    
+    echo -n "Do you want to enable '$unit_name'? [y/N]: " > /dev/tty
+    read -r answer < /dev/tty
+
+    case "$answer" in
+        [yY][eE][sS]|[yY])
+            echo "Enabling $unit_name..."
+            systemctl --user enable "$unit_name"
+            ;;
+        *)
+            echo "Skipping $unit_name"
+            ;;
+    esac
+done < <(find "$HOME/.config/systemd/user" -type f \( -name "*.service" -o -name "*.timer" \))
+
+echo "Done."
