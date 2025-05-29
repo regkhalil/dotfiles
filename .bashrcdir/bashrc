@@ -11,5 +11,7 @@
 alias ls="eza -la"
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias update="sudo nala update && sudo nala upgrade -y && flatpak update -y && sudo snap refresh"
+alias gearlever="flatpak run it.mijorus.gearlever"
+
 
 [ -d "$HOME/.local/scripts" ] && export PATH="$PATH:$HOME/.local/scripts"
