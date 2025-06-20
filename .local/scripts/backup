@@ -1,32 +1,68 @@
 #!/bin/bash
 
-# Exit immediately if a command exits with a non-zero status (except in conditionals)
+# Exit immediately on error
 set -e
 
-# === Variables ===
+# === CONFIGURATION ===
 BACKUP_DEST="/media/khalil/External/Backups/Restic"
 export RESTIC_REPOSITORY="$BACKUP_DEST"
 export RESTIC_PASSWORD_FILE="$HOME/.restic-password"
 
-# === Start ===
-echo "Starting restic backup..."
-echo "Backup destination: $RESTIC_REPOSITORY"
-echo "Password file: $RESTIC_PASSWORD_FILE"
+timestamp() {
+    date +"%Y-%m-%d %H:%M:%S"
+}
 
-# Check if backup destination is mounted
+log_info() {
+    echo "[INFO  $(timestamp)] $1"
+}
+
+log_error() {
+    echo "[ERROR $(timestamp)] $1" >&2
+}
+
+log_success() {
+    echo "[DONE  $(timestamp)] $1"
+}
+
+# === START ===
+log_info "=== Starting Restic backup process ==="
+log_info "Backup destination: $RESTIC_REPOSITORY"
+log_info "Password file used: $RESTIC_PASSWORD_FILE"
+
+# Check if the backup destination exists and is mounted
 if [ ! -d "$BACKUP_DEST" ]; then
-    echo "Error: Backup destination '$BACKUP_DEST' not found. Is the drive mounted?"
+    log_error "Backup destination '$BACKUP_DEST' not found. Is the external drive mounted?"
     exit 1
 fi
 
-# === Backup ===
-echo "Running restic backup..."
-restic backup "$HOME/Documents" "$HOME/Library" "$HOME/Pictures" "$HOME/Sync" "$HOME/Audiobooks" "$HOME/Music" "$HOME/.config" "$HOME/.mozilla"  --exclude-caches
+# === BACKUP ===
+log_info "Starting backup of selected directories..."
+restic backup \
+    "$HOME/Documents" \
+    "$HOME/Library" \
+    "$HOME/Pictures" \
+    "$HOME/Sync" \
+    "$HOME/Audiobooks" \
+    "$HOME/Music" \
+    "$HOME/.config" \
+    "$HOME/.mozilla" \
+    --exclude-caches
 
-# === Prune ===
-echo "Pruning old snapshots (keeping last 7)..."
+log_success "Backup completed."
+
+# Show summary of latest snapshots
+log_info "Displaying the 5 most recent snapshots:"
+restic snapshots --last 5
+
+# === PRUNE ===
+log_info "Pruning old snapshots (keeping daily:1, weekly:1)..."
 restic forget --keep-daily 1 --keep-weekly 1 --prune
+log_success "Snapshot pruning completed."
 
-# === Done ===
-echo "Backup and prune completed successfully."
+# === RCLONE SYNC ===
+log_info "Syncing local Restic repo to remote (rclone target: ensi:RestikBak/)..."
+rclone -v sync "$BACKUP_DEST" ensi:RestikBak/
+log_success "Remote sync via rclone completed."
 
+# === FINISH ===
+log_success "=== All tasks completed successfully ==="
