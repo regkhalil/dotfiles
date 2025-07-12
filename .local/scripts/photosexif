@@ -5,6 +5,7 @@ DIRS=(
   "$HOME/Pictures/Camera"
   "$HOME/Pictures/Whatsapp Images"
   "$HOME/Pictures/Whatsapp Videos"
+  "$HOME/Pictures/Pictures"
 )
 
 # Target output directory
