@@ -49,7 +49,7 @@ dotfiles push
 To use your dotfiles on a new machine, clone the repository as a **bare repository** and check it out directly into your home directory:
 
 ```bash
-git clone --separate-git-dir=$HOME/.dotfiles https://github.com/yourusername/.dotfiles.git ~
+git clone --separate-git-dir=$HOME/.dotfiles git@github.com:regkhalil/dotfiles.git  ~
 ```
 
 > ⚠️ If you already have existing config files, the checkout may fail due to conflicts.
@@ -59,9 +59,16 @@ git clone --separate-git-dir=$HOME/.dotfiles https://github.com/yourusername/.do
 To avoid conflicts with pre-existing files, you can clone to a temporary directory first, then copy the files:
 
 ```bash
-git clone --separate-git-dir=$HOME/.dotfiles https://github.com/yourusername/.dotfiles.git tmpdotfiles
+git clone --separate-git-dir=$HOME/.dotfiles git@github.com:regkhalil/dotfiles.git  tmpdotfiles
 rsync --recursive --verbose --exclude '.git' tmpdotfiles/ $HOME/
 rm -r tmpdotfiles
+```
+
+Then add these lines at the end of your .bashrc:
+```bash
+for FILE in ~/.bashrcdir/*; do
+    source $FILE
+done
 ```
 
 And that's it—no symlink mess, no complex setup, just version-controlled dotfiles where they belong.
