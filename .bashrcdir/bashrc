@@ -8,7 +8,7 @@
 
 
 
-alias ls="eza -la"
+alias ls="ls -lh"
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias update="sudo apt update && sudo apt upgrade"
 
