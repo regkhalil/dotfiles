@@ -10,7 +10,7 @@
 
 alias ls="ls -lh"
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-alias update="sudo apt update && sudo apt upgrade"
+alias update="sudo dnf update && flatpak update"
 
 
 [ -d "$HOME/.local/scripts" ] && export PATH="$PATH:$HOME/.local/scripts"
