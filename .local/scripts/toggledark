@@ -1,10 +1,17 @@
 #!/usr/bin/env sh
 set -euo
 
-if test "$(gsettings get org.gnome.desktop.interface color-scheme)" = "'default'"; then
-  gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+# Get current color scheme
+current_scheme=$(gsettings get org.gnome.desktop.interface color-scheme)
+
+if [ "$current_scheme" = "'default'" ]; then
+  # Switch to dark mode
+  gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
   gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+  gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
 else
-  gsettings set org.gnome.desktop.interface color-scheme default
+  # Switch to light mode
+  gsettings set org.gnome.desktop.interface color-scheme 'default'
   gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'
+  gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Light'
 fi
