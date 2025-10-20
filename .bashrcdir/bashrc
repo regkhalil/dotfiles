@@ -8,9 +8,9 @@
 
 
 
-alias ls="ls -lh"
+alias ls="eza -lh"
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-alias update="sudo dnf update && flatpak update"
+alias update="sudo apt update && sudo apt upgrade"
 
 
 [ -d "$HOME/.local/scripts" ] && export PATH="$PATH:$HOME/.local/scripts"
